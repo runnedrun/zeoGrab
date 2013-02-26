@@ -7,17 +7,20 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Hashtable;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.myzeo.android.api.data.ZeoDataContract;
 import com.myzeo.android.api.data.ZeoDataContract.SleepRecord;
 
 public class DisplayMessageActivity extends Activity {
@@ -27,25 +30,68 @@ public class DisplayMessageActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		// Show the Up button in the action bar.
 		Intent intent = getIntent();
-//		String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-		UpdateScreen();
-		 // Create the text view
-	    
+		UpdateScreen();	    
+	}
+	
+	public String stageToTemp(String stage){
+	     Hashtable<String, String> lookup = new Hashtable<String, String>();
+	     lookup.put("0", "65");
+	     lookup.put("1", "68");
+	     lookup.put("2", "69");
+	     lookup.put("3", "63");
+	     lookup.put("4", "61");
+	     
+	     return (String) lookup.get(stage);  
+	}
+	
+	public String stageNumberToString(String stage){
+	     Hashtable<String, String> lookup = new Hashtable<String, String>();
+	     lookup.put("0", "Headband_removed");
+	     lookup.put("1", "Wake");
+	     lookup.put("2", "Rem");
+	     lookup.put("3", "Light");
+	     lookup.put("4", "Deep");
+	     lookup.put("5", "Waiting for headband");
+	     
+	     return (String) lookup.get(stage);  
 	}
 	
 	public void UpdateScreen(){
 		TextView textView = new TextView(this);
 	    textView.setTextSize(40);
 	    System.out.println("Updating Screen");
-	    textView.setText(getZeoData());
+	    String data = getZeoData();
 	    System.out.println("Got Zeo Data");
+	    System.out.println("converting to temperature");
+//	    String stage = stageNumberToString(data);
+//	    System.out.println("posting temp setting " + temp);
+	    String resp = postSleepData(data);
+	    textView.setText(data);
 	    // Set the text view as the activity layout
 	    setContentView(textView);
 	}
+	
+	public String postSleepData(String data){
+    	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	String response = "";
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    	System.out.println("chekcing if wifi is up");
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	    	 try {
+//	              	response = downloadUrl("http://warm-wake.herokuapp.com/sleep?value="+data);
+	    		 	response = downloadUrl("http://10.41.88.88:3000/change_temp?value="+data);
+	              	System.out.println(response);
+	            } catch (IOException e) {
+	            	e.printStackTrace();	
+	            	System.out.println("Unable to retrieve web page. URL may be invalid.");
+	            }
+	    } else {
+	    	System.out.println("Faillllll");
+	    }
+	    return response;
+	}
+	
 	
 	class SleepContentObserver extends ContentObserver {
 		  public SleepContentObserver( Handler h ) {
@@ -116,7 +162,7 @@ public class DisplayMessageActivity extends Activity {
 	    		};
 	    	
 	    	byte[] sleepArray = null;
-	    	String latestStage = "122233";
+	    	String latestStage = "5";
 	    	int count = 0;
 	    	
 	    	// If the word is the empty string, gets everything
@@ -167,7 +213,7 @@ public class DisplayMessageActivity extends Activity {
 	    	}
 	        System.out.println("Ready to return");
 	        System.out.println(count);
-	    	return ""+count;
+	    	return ""+latestStage;
 	    }
 	
 }
