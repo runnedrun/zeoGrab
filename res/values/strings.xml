@@ -8,5 +8,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_display_message">Display Message</string>
+    <string name="cancel_alarm">Cancel Alarm</string>
 
 </resources>

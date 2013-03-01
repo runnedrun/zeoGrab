@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Hashtable;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.myzeo.android.api.data.ZeoDataContract.SleepRecord;
+
 
 public class DisplayMessageActivity extends Activity {
 	private Handler handler = new Handler();
@@ -183,6 +185,7 @@ public class DisplayMessageActivity extends Activity {
 	        sleepObserver = new SleepContentObserver( handler );
 	        getContentResolver().registerContentObserver(SleepRecord.CONTENT_URI, true, sleepObserver);
 //	    	int index = mCursor.getColumnIndex(SleepRecord.ZQ_SCORE);
+	        
 	    	
 	    	if (mCursor != null) {
 	    	    /*

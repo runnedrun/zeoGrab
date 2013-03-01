@@ -16,6 +16,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
             android:name="com.example.zeo_test_1.MainActivity"
             android:label="@string/app_name" >
@@ -33,6 +34,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.exampleZeo_test_1.MainActivity" />
         </activity>
+        <receiver android:name=".AlarmReceiver"></receiver>
+  		<service android:name=".DisplayMessageActivity"></service>
     </application>
 
 </manifest>
