@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.provider.UserDictionary;
 import android.util.Log;
@@ -29,10 +31,13 @@ import android.widget.TextView;
 
 
 
+
 public class MainActivity extends Activity {
 	
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     
+    
+   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,60 +52,24 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-    
-    public class AlarmReceiver extends BroadcastReceiver 
-    {
-        @Override
-        public void onReceive(Context context,Intent intent) 
-        {
-        	System.out.println("alarm called");
-//            Intent myService = new Intent(context, DisplayMessageActivity.class);
-//            context.startService(myService);
-        }
-
-    }
+   
     
     /** Called when the user clicks the Send button */
     public void sendMessage(View view) {
     	
-    	Intent myAlarm = new Intent(getApplicationContext(),AlarmReceiver.class);
-    	//myAlarm.putExtra("project_id",project_id); //Put Extra if needed
-    	PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(),0,myAlarm,PendingIntent.FLAG_CANCEL_CURRENT);
-    	AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-    	Calendar now = Calendar.getInstance(); 
-
-    	//updateTime.setWhatever(0);    //set time to start first occurence of alarm
-//    	SystemClock.elapsedRealtime()
+//    	Intent myAlarm = new Intent(getApplicationContext(),AlarmReceiver.class);
+    	//myAlarm.putExtra("project_id",project_id); //Put Extra if neede
+        	
     	
-    	System.out.println("setting alarm");
-//    	alarms.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, now.getTimeInMillis(), 60000, recurringAlarm);
-//    	alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP,now.getTimeInMillis()+10000,10000,recurringAlarm); //you can modify the interval of course
-    	alarms.set(AlarmManager.RTC_WAKEUP,now.getTimeInMillis()+10000,recurringAlarm); //you can modify the interval of course
-
-    	System.out.println("alarm set");
-    	
-    	
-//    	Intent intent = new Intent(this, DisplayMessageActivity.class);
+    	Intent intent = new Intent(this, DisplayMessageActivity.class);
 //    	EditText editText = (EditText) findViewById(R.id.edit_message);
 //    	String message = editText.getText().toString();
 //    	intent.putExtra(EXTRA_MESSAGE, message);
-//    	startActivity(intent);
+    	startActivity(intent);
 //    	TextView textView = new TextView(this);
 //	    textView.setTextSize(40);
     }
     
-    public void cancelAlarm(View view){
-    	Intent myAlarm = new Intent(getApplicationContext(),AlarmReceiver.class);
-    	//myAlarm.putExtra("project_id",project_id); //put the SAME extras
-    	PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(),0,myAlarm,PendingIntent.FLAG_CANCEL_CURRENT);
-    	AlarmManager alarms = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-    	System.out.println("cancelling alarm");
-    	alarms.cancel(recurringAlarm);
-    	System.out.println("alarm cancelled");
-    	
-    	TextView textView = new TextView(this);
-	    textView.setTextSize(40);
-    }
     
     public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
         Reader reader = null;
